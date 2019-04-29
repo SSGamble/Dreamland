@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 61125646549379448}
   - component: {fileID: 50471121637863822}
   - component: {fileID: 114493084268435000}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: PlatfromGrassGroup1
   m_TagString: Platform
   m_Icon: {fileID: 0}
@@ -41,7 +41,7 @@ GameObject:
   - component: {fileID: 61443246065473524}
   m_Layer: 0
   m_Name: Obstacle
-  m_TagString: Untagged
+  m_TagString: Obstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -186,6 +186,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spriteRenderers:
   - {fileID: 212589285712426648}
+  obstacle: {fileID: 1545431630598808}
 --- !u!212 &212589285712426648
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -263,7 +264,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1411188575
   m_SortingLayer: 1
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 21300008, guid: 20da7e56cbb26b3498b25fb61fa9a7ff, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

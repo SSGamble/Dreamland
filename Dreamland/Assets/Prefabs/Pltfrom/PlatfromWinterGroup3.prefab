@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 61467574707488592}
   - component: {fileID: 50259891721966340}
   - component: {fileID: 114738001499346384}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: PlatfromWinterGroup3
   m_TagString: Platform
   m_Icon: {fileID: 0}
@@ -57,7 +57,7 @@ GameObject:
   - component: {fileID: 61661892503243988}
   m_Layer: 0
   m_Name: Obstacle
-  m_TagString: Untagged
+  m_TagString: Obstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -186,6 +186,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spriteRenderers:
   - {fileID: 212469285415366122}
+  obstacle: {fileID: 1985672034572416}
 --- !u!212 &212143870345782510
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -219,7 +220,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1411188575
   m_SortingLayer: 1
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 21300022, guid: 20da7e56cbb26b3498b25fb61fa9a7ff, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

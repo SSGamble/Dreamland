@@ -7,6 +7,12 @@ public class PlayerController : MonoBehaviour {
 
     private ManagerVars vars;
 
+    private Rigidbody2D playerRigi;
+    private SpriteRenderer spriteRenderer;
+
+    public Transform rayDown,rayLeft,rayRight; // 玩家身上的射线监测点
+    public LayerMask platformLayer,obstacleLayer; // 平台层，障碍层
+
     private bool isLeft = false; // 是否点击了左边
     private bool isJumping = false; // 是否正在跳跃
     private Vector3 nextPlatformLeft, nextPlatformRight; // 下一个平台
@@ -14,6 +20,8 @@ public class PlayerController : MonoBehaviour {
     private void Awake()
     {
         vars = ManagerVars.GetManagerVars();
+        playerRigi = GetComponent<Rigidbody2D>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     void Update () {
@@ -37,8 +45,60 @@ public class PlayerController : MonoBehaviour {
                 isLeft = false;
             }
             Jump();
+
+            // 游戏结束，正在下落，没有检测到平台
+            if (playerRigi.velocity.y < 0 && !IsRayPlatform() && !GameManager.Instance.IsGameOver) 
+            {
+                // Player 处理
+                spriteRenderer.sortingLayerName = "Default";
+                GetComponent<BoxCollider2D>().enabled = false;
+                GameManager.Instance.IsGameOver = true;
+                // 调用面板
+            }
+
+            if (playerRigi.velocity.y < 0 && IsRayObstacle() && !GameManager.Instance.IsGameOver)
+            {
+                GameManager.Instance.IsGameOver = true;
+                Destroy(gameObject);
+            }
         }
 	}
+
+    /// <summary>
+    /// 是否检测到平台
+    /// </summary>
+    /// <returns></returns>
+    private bool IsRayPlatform()
+    {
+        RaycastHit2D hit = Physics2D.Raycast(rayDown.position, Vector2.down, 1f, platformLayer);
+        if (hit.collider != null && hit.collider.tag == "Platform")
+            return true;
+        return false;
+    }
+
+    /// <summary>
+    /// 是否检测到障碍物
+    /// </summary>
+    /// <returns></returns>
+    private bool IsRayObstacle()
+    {
+        RaycastHit2D leftHit = Physics2D.Raycast(rayLeft.position, Vector2.left, 1.5f, obstacleLayer);
+        RaycastHit2D rightHit = Physics2D.Raycast(rayRight.position, Vector2.right, 1.5f, obstacleLayer);
+
+        if (leftHit.collider != null)
+        {
+            if (leftHit.collider.tag == "Obstacle")
+            {
+                print("left: " + leftHit.collider.tag);
+                return true;
+            }
+        }
+
+        if (rightHit.collider != null && rightHit.collider.tag == "Obstacle")
+            return true;
+
+        return false;
+    }
 
     /// <summary>
     /// 跳跃
