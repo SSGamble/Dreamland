@@ -3,7 +3,8 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Platform
   layers:
   - Default
   - TransparentFX
@@ -40,6 +41,12 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Platfrom
+    uniqueID: 1411188575
+    locked: 0
+  - name: Player
+    uniqueID: 4096756579
     locked: 0
   - name: GUI
     uniqueID: 372536595
