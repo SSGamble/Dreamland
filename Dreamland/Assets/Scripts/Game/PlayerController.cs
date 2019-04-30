@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using UnityEngine.EventSystems;
 
 public class PlayerController : MonoBehaviour {
 
@@ -13,9 +14,11 @@ public class PlayerController : MonoBehaviour {
     public Transform rayDown,rayLeft,rayRight; // 玩家身上的射线监测点
     public LayerMask platformLayer,obstacleLayer; // 平台层，障碍层
 
+    private bool isMove = false; // 开始移动了
     private bool isLeft = false; // 是否点击了左边
     private bool isJumping = false; // 是否正在跳跃
     private Vector3 nextPlatformLeft, nextPlatformRight; // 下一个平台
+    private GameObject lastHitGo = null; // 防止在一个平台上广播多次事件码
 
     private void Awake()
     {
@@ -25,13 +28,25 @@ public class PlayerController : MonoBehaviour {
     }
 
     void Update () {
+        // 绘制射线
+        //Debug.DrawRay(rayDown.position, Vector2.down * 1,Color.red);
+        //Debug.DrawRay(rayLeft.position, Vector2.left * 0.15f, Color.red);
+        //Debug.DrawRay(rayRight.position, Vector2.right * 0.15f, Color.red);
 
-        if (GameManager.Instance.IsGameOver || !GameManager.Instance.IsGameStart)
+        if (EventSystem.current.IsPointerOverGameObject()) // 是否点击 UI 界面
+            return;
+
+        if (GameManager.Instance.IsGameOver || !GameManager.Instance.IsGameStart || GameManager.Instance.IsPause)
             return;
 
         // 鼠标监听
         if (Input.GetMouseButtonDown(0) && !isJumping)
         {
+            if (!isMove)
+            {
+                EventCenter.Broadcast(EventDefine.PlayerMove);
+                isMove = true;
+            }
             EventCenter.Broadcast(EventDefine.DecidePath);
             isJumping = true;
             Vector3 mousePos = Input.mousePosition; // 鼠标点击的位置
@@ -44,25 +59,47 @@ public class PlayerController : MonoBehaviour {
             {
                 isLeft = false;
             }
+
             Jump();
-
-            // 游戏结束，正在下落，没有检测到平台
-            if (playerRigi.velocity.y < 0 && !IsRayPlatform() && !GameManager.Instance.IsGameOver) 
-            {
-                // Player 处理
-                spriteRenderer.sortingLayerName = "Default";
-                GetComponent<BoxCollider2D>().enabled = false;
-                GameManager.Instance.IsGameOver = true;
-                // 调用面板
-            }
-
-            if (playerRigi.velocity.y < 0 && IsRayObstacle() && !GameManager.Instance.IsGameOver)
-            {
-                GameManager.Instance.IsGameOver = true;
-                Destroy(gameObject);
-            }
         }
-	}
+
+        // 游戏结束，正在下落，没有检测到平台
+        if (playerRigi.velocity.y < 0 && !IsRayPlatform() && !GameManager.Instance.IsGameOver)
+        {
+            // Player 处理
+            spriteRenderer.sortingLayerName = "Default";
+            GetComponent<BoxCollider2D>().enabled = false;
+            GameManager.Instance.IsGameOver = true;
+            // 调用游戏结束面板
+            StartCoroutine(DealyShowGameOverPanel());
+        }
+
+        // 游戏结束，障碍物检测
+        if (isJumping && IsRayObstacle() && !GameManager.Instance.IsGameOver)
+        {
+            GameObject go = ObjectPool.Instance.GetDeathEffect();
+            go.transform.position = transform.position;
+            go.SetActive(true);
+            GameManager.Instance.IsGameOver = true;
+            spriteRenderer.enabled = false; // 不显示玩家
+            // 调用游戏结束面板
+            StartCoroutine(DealyShowGameOverPanel());
+        }
+
+        // 游戏结束，和平台一起掉下去
+        if(transform.position.y-Camera.main.transform.position.y < -6 && !GameManager.Instance.IsGameOver)
+        {
+            GameManager.Instance.IsGameOver = true;
+            StartCoroutine(DealyShowGameOverPanel());
+        }
+    }
+
+    IEnumerator DealyShowGameOverPanel()
+    {
+        yield return new WaitForSeconds(1f);
+        // 调用游戏结束面板
+        EventCenter.Broadcast(EventDefine.ShowGameOverPanel);
+    }
 
     /// <summary>
     /// 是否检测到平台
@@ -72,7 +109,20 @@ public class PlayerController : MonoBehaviour {
     {
         RaycastHit2D hit = Physics2D.Raycast(rayDown.position, Vector2.down, 1f, platformLayer);
         if (hit.collider != null && hit.collider.tag == "Platform")
+        {
+            // 防止在一个平台上广播多次事件码
+            if (lastHitGo != hit.collider.gameObject)
+            {
+                if (lastHitGo == null)
+                {
+                    lastHitGo = hit.collider.gameObject;
+                    return true;
+                }
+                EventCenter.Broadcast(EventDefine.AddScore);
+                lastHitGo = hit.collider.gameObject;
+            }
             return true;
+        }
         return false;
     }
 
@@ -82,8 +132,8 @@ public class PlayerController : MonoBehaviour {
     /// <returns></returns>
     private bool IsRayObstacle()
     {
-        RaycastHit2D leftHit = Physics2D.Raycast(rayLeft.position, Vector2.left, 1.5f, obstacleLayer);
-        RaycastHit2D rightHit = Physics2D.Raycast(rayRight.position, Vector2.right, 1.5f, obstacleLayer);
+        RaycastHit2D leftHit = Physics2D.Raycast(rayLeft.position, Vector2.left, 0.15f, obstacleLayer);
+        RaycastHit2D rightHit = Physics2D.Raycast(rayRight.position, Vector2.right, 0.15f, obstacleLayer);
 
         if (leftHit.collider != null)
         {
@@ -95,8 +145,10 @@ public class PlayerController : MonoBehaviour {
         }
 
         if (rightHit.collider != null && rightHit.collider.tag == "Obstacle")
+        {
+            print("right: " + rightHit.collider.tag);
             return true;
-
+        }
         return false;
     }
 
@@ -131,6 +183,19 @@ public class PlayerController : MonoBehaviour {
             Vector3 currentPlatformPos = collision.gameObject.transform.position; // 当前平台的位置
             nextPlatformLeft = new Vector3(currentPlatformPos.x - vars.nextXPos, currentPlatformPos.y + vars.nextYPos, 0); // 下一个左平台
             nextPlatformRight = new Vector3(currentPlatformPos.x + vars.nextXPos, currentPlatformPos.y + vars.nextYPos, 0); // 下一个右平台
+        }
+    }
+
+    /// <summary>
+    /// 吃钻石
+    /// </summary>
+    /// <param name="collision"></param>
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if(collision.collider.tag == "PickUp")
+        {
+            EventCenter.Broadcast(EventDefine.AddDiamond);
+            collision.gameObject.SetActive(false);
         }
     }
 }

@@ -28,6 +28,10 @@ public class PlatformSpawner : MonoBehaviour {
     private Sprite selectPlatformSprite; // 选中的平台图
     private int spikeAfterPlatformCount; // 钉子之后生成的平台数量
     private bool isSpawnSpike;
+    public int milestoneCount = 10; // 里程碑数
+    public float fallTime; // 掉落时间
+    public float minFallTime; // 最小掉落时间
+    public float multiple; // 掉落时间要乘的系数
 
     private void Awake()
     {
@@ -52,6 +56,31 @@ public class PlatformSpawner : MonoBehaviour {
 
         Instantiate(vars.characterPre); // 生成 Player
 	}
+
+    private void Update()
+    {
+        if (GameManager.Instance.IsGameStart && !GameManager.Instance.IsGameOver)
+        {
+            UpdateFallTime();
+        }
+    }
+
+    /// <summary>
+    /// 更新平台掉落时间
+    /// </summary>
+    private void UpdateFallTime()
+    {
+        // 根据触发里程碑来控制平台的掉落时间
+        if(GameManager.Instance.Score > milestoneCount)
+        {
+            milestoneCount *= 2; // 里程碑数翻倍
+            fallTime *= multiple; // 掉落时间翻倍
+            if (fallTime < minFallTime) // 最小掉落时间的控制
+            {
+                fallTime = minFallTime;
+            }
+        }
+    }
 
     /// <summary>
     /// 随机平台主题
@@ -154,6 +183,15 @@ public class PlatformSpawner : MonoBehaviour {
             }
         }
 
+        // 生成钻石
+        int ranDiamond = Random.Range(0, 6);
+        if(ranDiamond == 1 && GameManager.Instance.IsPlayerMove)
+        {
+            GameObject go = ObjectPool.Instance.GetDiamond();
+            go.transform.position = new Vector3(platformSpawnPos.x, platformSpawnPos.y + 0.5f, 0);
+            go.SetActive(true);
+        }
+
         if (isLeftSpawn) // 向左生成，-x，+y
         {
             platformSpawnPos = new Vector3(platformSpawnPos.x - vars.nextXPos, platformSpawnPos.y + vars.nextYPos, 0);
@@ -172,7 +210,7 @@ public class PlatformSpawner : MonoBehaviour {
         // GameObject go = Instantiate(vars.normalPlatformPre, transform); // 初始化平台
         GameObject go = ObjectPool.Instance.GetNormalPlatform();
         go.transform.position = platformSpawnPos;
-        go.GetComponent<PlatformScript>().Init(selectPlatformSprite, obstacleIndex); // 随机平台样式
+        go.GetComponent<PlatformScript>().Init(selectPlatformSprite, fallTime, obstacleIndex); // 随机平台样式
         go.SetActive(true);
     }
 
@@ -185,7 +223,7 @@ public class PlatformSpawner : MonoBehaviour {
         // GameObject go = Instantiate(vars.commonPlatformGroup[index], transform);
         GameObject go = ObjectPool.Instance.GetCommonPlatform();
         go.transform.position = platformSpawnPos;
-        go.GetComponent<PlatformScript>().Init(selectPlatformSprite, obstacleIndex);
+        go.GetComponent<PlatformScript>().Init(selectPlatformSprite, fallTime, obstacleIndex);
         go.SetActive(true);
     }
 
@@ -198,7 +236,7 @@ public class PlatformSpawner : MonoBehaviour {
         // GameObject go = Instantiate(vars.grassPlatformGroup[index], transform);
         GameObject go = ObjectPool.Instance.GetGrassPlatform();
         go.transform.position = platformSpawnPos;
-        go.GetComponent<PlatformScript>().Init(selectPlatformSprite, obstacleIndex);
+        go.GetComponent<PlatformScript>().Init(selectPlatformSprite, fallTime, obstacleIndex);
         go.SetActive(true);
     }
 
@@ -211,7 +249,7 @@ public class PlatformSpawner : MonoBehaviour {
         // GameObject go = Instantiate(vars.winterPlatformGroup[index], transform);
         GameObject go = ObjectPool.Instance.GetWinterPlatform();
         go.transform.position = platformSpawnPos;
-        go.GetComponent<PlatformScript>().Init(selectPlatformSprite, obstacleIndex);
+        go.GetComponent<PlatformScript>().Init(selectPlatformSprite, fallTime, obstacleIndex);
         go.SetActive(true);
     }
 
@@ -225,17 +263,17 @@ public class PlatformSpawner : MonoBehaviour {
         {
             spikeSpawnLeft = false;
             // temp = Instantiate(vars.spikePlatformRight, transform);
-            temp = ObjectPool.Instance.GeRightSpikePlatform();
+            temp = ObjectPool.Instance.GetRightSpikePlatform();
 
         }
         else // 钉子在左边
         {
             spikeSpawnLeft = true;
             // temp = Instantiate(vars.spikePlatformLeft, transform);
-            temp = ObjectPool.Instance.GeLeftSpikePlatform();
+            temp = ObjectPool.Instance.GetLeftSpikePlatform();
         }
         temp.transform.position = platformSpawnPos;
-        temp.GetComponent<PlatformScript>().Init(selectPlatformSprite, obstacleIndex);
+        temp.GetComponent<PlatformScript>().Init(selectPlatformSprite, fallTime, obstacleIndex);
         temp.SetActive(true);
     }
 
@@ -283,7 +321,7 @@ public class PlatformSpawner : MonoBehaviour {
                             spikePlatformPos.y + vars.nextYPos, 0);
                     }
                 }
-                temp.GetComponent<PlatformScript>().Init(selectPlatformSprite, 1);
+                temp.GetComponent<PlatformScript>().Init(selectPlatformSprite,fallTime, 1);
                 temp.SetActive(true);
             }
         }

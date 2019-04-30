@@ -38,7 +38,7 @@ GameObject:
   - component: {fileID: 4062309624211460}
   - component: {fileID: 212527517476417900}
   - component: {fileID: 61412432374887512}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: SpatformWithSpike
   m_TagString: Obstacle
   m_Icon: {fileID: 0}

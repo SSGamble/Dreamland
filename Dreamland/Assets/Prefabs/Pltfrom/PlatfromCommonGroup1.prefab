@@ -55,7 +55,7 @@ GameObject:
   - component: {fileID: 4969236696474778}
   - component: {fileID: 212870925965166402}
   - component: {fileID: 61722792943573138}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Obstacle
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -135,7 +135,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.03934574, y: 0.10031587}
+  m_Offset: {x: -0.007250309, y: 0.31502777}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -146,7 +146,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.6121385, y: 0.8869163}
+  m_Size: {x: 0.20219445, y: 0.45749247}
   m_EdgeRadius: 0
 --- !u!61 &61920158954369840
 BoxCollider2D:

@@ -32,6 +32,8 @@ public class ObjectPool : MonoBehaviour {
     private List<GameObject> winterlPlatformList = new List<GameObject>();
     private List<GameObject> spikePlatformLeftList = new List<GameObject>();
     private List<GameObject> spikePlatformRightList = new List<GameObject>();
+    private List<GameObject> deathEffectList = new List<GameObject>(); // 死亡特效
+    private List<GameObject> diamondList = new List<GameObject>();
 
     private void Awake()
     {
@@ -83,6 +85,18 @@ public class ObjectPool : MonoBehaviour {
         for (int i = 0; i < initSpawnCount; i++)
         {
             InstantiateObject(vars.spikePlatformRight, ref spikePlatformRightList);
+        }
+
+        // 死亡特效
+        for (int i = 0; i < initSpawnCount; i++)
+        {
+            InstantiateObject(vars.deathEffect, ref deathEffectList);
+        }
+
+        // 钻石
+        for (int i = 0; i < initSpawnCount; i++)
+        {
+            InstantiateObject(vars.diamondPre, ref diamondList);
         }
     }
 
@@ -170,7 +184,7 @@ public class ObjectPool : MonoBehaviour {
     /// 获取左边钉子组合平台
     /// </summary>
     /// <returns></returns>
-    public GameObject GeLeftSpikePlatform()
+    public GameObject GetLeftSpikePlatform()
     {
         for (int i = 0; i < spikePlatformLeftList.Count; i++)
         {
@@ -186,7 +200,7 @@ public class ObjectPool : MonoBehaviour {
     /// 获取右边钉子组合平台
     /// </summary>
     /// <returns></returns>
-    public GameObject GeRightSpikePlatform()
+    public GameObject GetRightSpikePlatform()
     {
         for (int i = 0; i < spikePlatformRightList.Count; i++)
         {
@@ -196,5 +210,37 @@ public class ObjectPool : MonoBehaviour {
             }
         }
         return InstantiateObject(vars.spikePlatformRight, ref spikePlatformRightList);
+    }
+
+    /// <summary>
+    /// 获取死亡特效
+    /// </summary>
+    /// <returns></returns>
+    public GameObject GetDeathEffect()
+    {
+        for (int i = 0; i < deathEffectList.Count; i++)
+        {
+            if (deathEffectList[i].activeInHierarchy == false)
+            {
+                return deathEffectList[i];
+            }
+        }
+        return InstantiateObject(vars.deathEffect, ref deathEffectList);
+    }
+
+    /// <summary>
+    /// 获取钻石
+    /// </summary>
+    /// <returns></returns>
+    public GameObject GetDiamond()
+    {
+        for (int i = 0; i < diamondList.Count; i++)
+        {
+            if (diamondList[i].activeInHierarchy == false)
+            {
+                return diamondList[i];
+            }
+        }
+        return InstantiateObject(vars.diamondPre, ref diamondList);
     }
 }

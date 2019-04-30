@@ -27,6 +27,8 @@ public class ManagerVars : ScriptableObject {
     public List<GameObject> winterPlatformGroup = new List<GameObject>(); // 冬季组合平台
     public GameObject spikePlatformLeft; // 左边钉子组合平台
     public GameObject spikePlatformRight; // 右边钉子组合平台
+    public GameObject deathEffect; // 死亡特效
+    public GameObject diamondPre; // 钻石
 
     // 获取 管理器容器
     public static ManagerVars GetManagerVars()
