@@ -8,4 +8,12 @@
     AddDiamond,
     UpdateDiamondUI,
     ShowGameOverPanel,
+    ShowShopPanel,
+    ShowMainPanel,
+    ChangeSkin,
+    ShowHint,
+    ShowResetPanel,
+    ShowRankPanel,
+    PlayClickAudio,
+    IsMusicOn
 }

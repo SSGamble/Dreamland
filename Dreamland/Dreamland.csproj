@@ -259,6 +259,8 @@
     <Compile Include="Assets\Scripts\Common\EventCenter.cs" />
     <Compile Include="Assets\Scripts\Common\EventDefine.cs" />
     <Compile Include="Assets\Scripts\Game\CameraFollow.cs" />
+    <Compile Include="Assets\Scripts\Game\ClickAudio.cs" />
+    <Compile Include="Assets\Scripts\Game\GameData.cs" />
     <Compile Include="Assets\Scripts\Game\GameManager.cs" />
     <Compile Include="Assets\Scripts\Game\ObjectPool.cs" />
     <Compile Include="Assets\Scripts\Game\PlatformScript.cs" />
@@ -267,7 +269,11 @@
     <Compile Include="Assets\Scripts\UI\BgTheme.cs" />
     <Compile Include="Assets\Scripts\UI\GameOverPanel.cs" />
     <Compile Include="Assets\Scripts\UI\GamePanel.cs" />
+    <Compile Include="Assets\Scripts\UI\Hint.cs" />
     <Compile Include="Assets\Scripts\UI\MainPanel.cs" />
+    <Compile Include="Assets\Scripts\UI\RankPanel.cs" />
+    <Compile Include="Assets\Scripts\UI\ResetPanel.cs" />
+    <Compile Include="Assets\Scripts\UI\ShopPanel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Demigiant\DOTween\DOTween.XML" />

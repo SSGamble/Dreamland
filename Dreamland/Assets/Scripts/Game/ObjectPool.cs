@@ -5,7 +5,8 @@ using UnityEngine;
 /// <summary>
 /// 对象池
 /// </summary>
-public class ObjectPool : MonoBehaviour {
+public class ObjectPool : MonoBehaviour
+{
 
     // 单例
     private static ObjectPool _instance;
@@ -22,10 +23,11 @@ public class ObjectPool : MonoBehaviour {
         }
     }
 
-    private ManagerVars vars;
+    private ManagerVars vars; // 管理器容器
 
-    public int initSpawnCount = 5;
+    public int initSpawnCount = 5; // 默认生成数量
 
+    // 存放可能会用用到的物体
     private List<GameObject> normalPlatformList = new List<GameObject>();
     private List<GameObject> commonPlatformList = new List<GameObject>();
     private List<GameObject> grassPlatformList = new List<GameObject>();
@@ -42,11 +44,15 @@ public class ObjectPool : MonoBehaviour {
         Init();
     }
 
+    /// <summary>
+    /// 初始化，默认生成一些备用
+    /// </summary>
     private void Init()
     {
         // 普通平台
         for (int i = 0; i < initSpawnCount; i++)
         {
+            // 实例化物体并添加到相应的列表
             InstantiateObject(vars.normalPlatformPre, ref normalPlatformList);
         }
 
@@ -55,7 +61,7 @@ public class ObjectPool : MonoBehaviour {
         {
             for (int j = 0; j < vars.commonPlatformGroup.Count; j++)
             {
-                InstantiateObject(vars.commonPlatformGroup[j],ref commonPlatformList);
+                InstantiateObject(vars.commonPlatformGroup[j], ref commonPlatformList);
             }
         }
 
@@ -101,14 +107,14 @@ public class ObjectPool : MonoBehaviour {
     }
 
     /// <summary>
-    /// 添加到列表
+    /// 实例化物体并添加到相应的列表
     /// </summary>
-    /// <param name="pre"></param>
-    /// <param name="list"></param>
-    private GameObject InstantiateObject(GameObject pre,ref List<GameObject> list)
+    /// <param name="pre">待生成的预制体</param>
+    /// <param name="list">相应的 List</param>
+    private GameObject InstantiateObject(GameObject pre, ref List<GameObject> list)
     {
         GameObject go = Instantiate(pre, transform);
-        go.SetActive(false);
+        go.SetActive(false); // 默认隐藏
         list.Add(go);
         return go;
     }
@@ -121,11 +127,13 @@ public class ObjectPool : MonoBehaviour {
     {
         for (int i = 0; i < normalPlatformList.Count; i++)
         {
-            if(normalPlatformList[i].activeInHierarchy == false)
+            // 隐藏的，即是当前可用的
+            if (normalPlatformList[i].activeInHierarchy == false)
             {
                 return normalPlatformList[i];
             }
         }
+        // 没有可用的了，就重新生成一个
         return InstantiateObject(vars.normalPlatformPre, ref normalPlatformList);
     }
 

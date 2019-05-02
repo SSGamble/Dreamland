@@ -12,6 +12,10 @@ public class ManagerVars : ScriptableObject {
     // 背景图片
     public List<Sprite> bgThemeSpriteList = new List<Sprite>();
 
+    // 皮肤
+    public List<Sprite> skinSpriteList = new List<Sprite>(); // 正面
+    public List<Sprite> playerSpriteList = new List<Sprite>(); // 背面
+
     // 平台主题
     public List<Sprite> platformThemeSpriteList = new List<Sprite>();
 
@@ -29,6 +33,13 @@ public class ManagerVars : ScriptableObject {
     public GameObject spikePlatformRight; // 右边钉子组合平台
     public GameObject deathEffect; // 死亡特效
     public GameObject diamondPre; // 钻石
+    public GameObject skinCurrentPre; // 当前选择的皮肤
+    public List<string> skinNameList = new List<string>(); // 皮肤的名字
+    public List<int> skinPrice = new List<int>(); // 皮肤的价格
+
+    // 音效
+    public AudioClip jump, fall, hit, diamond, btn;
+    public Sprite musicOn, musicOff;
 
     // 获取 管理器容器
     public static ManagerVars GetManagerVars()

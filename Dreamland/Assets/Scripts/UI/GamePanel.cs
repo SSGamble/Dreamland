@@ -47,6 +47,7 @@ public class GamePanel : MonoBehaviour {
 
     private void OnPauseButtonClick()
     {
+        EventCenter.Broadcast(EventDefine.PlayClickAudio); // 播放音效
         pauseBtn.gameObject.SetActive(false);
         playBtn.gameObject.SetActive(true);
         Time.timeScale = 0; // 暂停游戏
@@ -55,6 +56,7 @@ public class GamePanel : MonoBehaviour {
 
     private void OnPlayButtonClick()
     {
+        EventCenter.Broadcast(EventDefine.PlayClickAudio); // 播放音效
         playBtn.gameObject.SetActive(false);
         pauseBtn.gameObject.SetActive(true);
         Time.timeScale = 1; // 开始游戏

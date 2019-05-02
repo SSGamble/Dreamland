@@ -208,7 +208,7 @@ public class PlatformSpawner : MonoBehaviour {
     private void SpawnNormalPlatform(int obstacleIndex)
     {
         // GameObject go = Instantiate(vars.normalPlatformPre, transform); // 初始化平台
-        GameObject go = ObjectPool.Instance.GetNormalPlatform();
+        GameObject go = ObjectPool.Instance.GetNormalPlatform(); // 从对象池中去取
         go.transform.position = platformSpawnPos;
         go.GetComponent<PlatformScript>().Init(selectPlatformSprite, fallTime, obstacleIndex); // 随机平台样式
         go.SetActive(true);
